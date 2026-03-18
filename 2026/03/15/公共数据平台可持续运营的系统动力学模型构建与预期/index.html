@@ -163,64 +163,42 @@
   pageType: 'post'
 }</script><!-- hexo injector head_end start -->
     <style>
-      :root { --pdf-theme-color: #327eb3; }
-
-      /* 容器：实现一行3个 */
-      .pdf-group-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 16px;
-        justify-content: flex-start;
-        margin: 25px 0;
-      }
-
-      /* 基础卡片 */
+      :root { --pdf-theme: #327eb3; }
+      .pdf-group-container { display: flex; flex-wrap: wrap; gap: 16px; margin: 25px 0; justify-content: flex-start; }
+      
       .pdf-book-card-mini {
-        flex: 1 1 calc(33.333% - 11px);
-        min-width: 220px;
-        background: #fff;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        border: 1px solid #eef2f6;
-        display: flex;
-        flex-direction: column;
-        transition: all 0.3s ease;
+        flex: 1 1 calc(33.333% - 11px); min-width: 220px;
+        background: #fff; border-radius: 12px; overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #eef2f6;
+        display: flex; flex-direction: column; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
       }
 
-      /* 手机端自适应 */
+      /* 手机端适配：一行一个 */
       @media screen and (max-width: 768px) {
         .pdf-group-container { gap: 12px; }
-        .pdf-group-container .pdf-book-card-mini {
-          flex: 1 1 100%; 
-          max-width: 100%;
-        }
+        .pdf-group-container .pdf-book-card-mini { flex: 1 1 100%; max-width: 100%; }
       }
 
       .pdf-book-card-mini:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
-      .pdf-card-spine { height: 6px; background: var(--pdf-theme-color); }
+      .pdf-card-spine { height: 6px; background: var(--pdf-theme); }
       .pdf-card-content { padding: 16px; flex-grow: 1; display: flex; flex-direction: column; }
-      .pdf-card-label { align-self: flex-start; background: rgba(50, 126, 179, 0.1); color: var(--pdf-theme-color); font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 700; margin-bottom: 10px; }
+      .pdf-card-label { align-self: flex-start; background: rgba(50, 126, 179, 0.1); color: var(--pdf-theme); font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 700; margin-bottom: 10px; }
       .pdf-card-title { margin: 0 0 6px 0; font-size: 15px; color: #1a202c; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
       .pdf-card-author { font-size: 12px; color: #718096; margin-bottom: 15px; }
       .pdf-card-actions { margin-top: auto; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f7fafc; padding-top: 12px; }
-      .btn-preview-link { color: var(--pdf-theme-color); font-size: 13px; font-weight: 600; text-decoration: none; cursor: pointer; padding: 5px 0; }
+      .btn-preview-link { color: var(--pdf-theme); font-size: 13px; font-weight: 600; text-decoration: none; cursor: pointer; }
       
       .btn-download-icon {
-        width: 36px; height: 36px;
-        background: #f1f5f9;
-        border-radius: 8px;
+        width: 36px; height: 36px; background: #f1f5f9; border-radius: 8px;
         display: flex; align-items: center; justify-content: center;
-        transition: all 0.2s; color: #475569;
-        -webkit-tap-highlight-color: transparent;
+        transition: all 0.2s; color: #475569; -webkit-tap-highlight-color: transparent;
       }
-      .btn-download-icon:active { background: var(--pdf-theme-color); color: #fff; }
+      .btn-download-icon:active { background: var(--pdf-theme); color: #fff; }
 
-      /* PC 模态框 */
-      #pdf-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100000; flex-direction: column; align-items: center; backdrop-filter: blur(4px); }
+      /* PC 预览模态框 - 使用 fixed 且延迟渲染 */
+      #pdf-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100000; flex-direction: column; align-items: center; backdrop-filter: blur(4px); }
       .pdf-modal-header { width: 100%; background: #1a1a1a; color: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
       #pdf-iframe { width: 100%; flex: 1; border: none; background: #525659; }
-      .pdf-loading-spinner { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 14px; display: none; }
     </style>
   <!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><span> 学习笔记</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tech/"><i class="fa-fw fas fa-code"></i><span> 技术学习</span></a></li><li><a class="site-page child" href="/product/"><i class="fa-fw fas fa-pen-ruler"></i><span> 产品设计</span></a></li><li><a class="site-page child" href="/data/"><i class="fa-fw fas fa-database"></i><span> 数据运营</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">知途 | 产品·数据的成长随笔</span></a><a class="nav-page-title" href="/"><span class="site-name">公共数据平台可持续运营的系统动力学建模与仿真研究</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><span> 学习笔记</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tech/"><i class="fa-fw fas fa-code"></i><span> 技术学习</span></a></li><li><a class="site-page child" href="/product/"><i class="fa-fw fas fa-pen-ruler"></i><span> 产品设计</span></a></li><li><a class="site-page child" href="/data/"><i class="fa-fw fas fa-database"></i><span> 数据运营</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">公共数据平台可持续运营的系统动力学建模与仿真研究</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-03-14T16:00:00.000Z" title="发表于 2026-03-15 00:00:00">2026-03-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-03-15T14:01:16.393Z" title="更新于 2026-03-15 22:01:16">2026-03-15</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">10.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>32分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="公共数据平台可持续运营的系统动力学建模与仿真研究"><a href="#公共数据平台可持续运营的系统动力学建模与仿真研究" class="headerlink" title="公共数据平台可持续运营的系统动力学建模与仿真研究"></a>公共数据平台可持续运营的系统动力学建模与仿真研究</h1><h2 id="1-研究背景与意义"><a href="#1-研究背景与意义" class="headerlink" title="1 研究背景与意义"></a>1 研究背景与意义</h2><p>当前，我国各级城市正在大力推进<strong>公共数据平台</strong>建设，旨在促进政府数据资源的共享、开放与开发利用。然而，实践表明，仅依靠<strong>技术平台</strong>与工具不足以维持平台的长效运行，普遍存在”<strong>重建设、轻运营</strong>“的现象。随着时间推移，<strong>数据目录质量</strong>、<strong>数据质量</strong>及<strong>平台活跃度</strong>往往呈现逐渐降低的趋势。数据更新不及时、数据实用性不强、平台功能不完善等问题日益凸显，据统计，我国地方公共数据开放平台中约有<strong>46%的平台没有更新数据</strong>，仅有<strong>8.5%的地方平台</strong>连续两年发布新的数据集。这种”<strong>建而不用</strong>“、”<strong>用而不久</strong>“的状况严重制约了公共数据要素潜能的释放。</p>
 <p><strong>公共数据运营</strong>作为一种新型机制，通过引入专业团队、持续服务、价值挖掘与生态培育，能够大幅改善数据质量与平台活力。近年来，北京、上海等地已开始探索<strong>公共数据授权运营</strong>机制，通过建立价格形成机制、监督管理措施和市场化运营模式，促进数据要素的高效流通与价值释放。然而，运营机制与数据质量、平台活性之间的<strong>动态互动关系</strong>尚未得到系统研究，运营策略的长期效果难以预测，这迫切需要一个能够揭示复杂因果关系的研究框架。</p>
@@ -598,36 +576,30 @@
     <div id="pdf-modal-overlay">
       <div class="pdf-modal-header">
         <span id="pdf-modal-title" style="font-size:14px; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></span>
-        <button onclick="closePdfModal()" style="background:var(--pdf-theme-color); color:#fff; border:none; padding:6px 16px; border-radius:6px; cursor:pointer;">关闭</button>
+        <button onclick="closePdfModal()" style="background:var(--pdf-theme); color:#fff; border:none; padding:6px 16px; border-radius:6px; cursor:pointer;">关闭</button>
       </div>
-      <div id="pdf-loader" class="pdf-loading-spinner">正在调起阅读器...</div>
-      <iframe id="pdf-iframe"></iframe>
+      <iframe id="pdf-iframe" loading="lazy"></iframe>
     </div>
 
     <script>
       function openPdfModal(url, name) {
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        
-        if (isMobile) {
-          // 手机端：直接通过 location 跳转，触发手机原生 PDF 阅读
+        // 手机端直接利用系统原生阅读器，速度提升 500%
+        if (/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
           window.location.href = url;
           return;
         }
 
-        // PC端：模态框逻辑
         const overlay = document.getElementById('pdf-modal-overlay');
         const iframe = document.getElementById('pdf-iframe');
-        const loader = document.getElementById('pdf-loader');
         
         document.getElementById('pdf-modal-title').innerText = "预览: " + name;
         overlay.style.display = 'flex';
-        loader.style.display = 'block';
         document.body.style.overflow = 'hidden';
 
+        // 异步加载 iframe 防止阻塞
         setTimeout(() => {
-          iframe.src = url + '#toolbar=1';
-          iframe.onload = () => { loader.style.display = 'none'; };
-        }, 50);
+          iframe.src = url + '#toolbar=0'; 
+        }, 10);
       }
 
       function closePdfModal() {
@@ -635,24 +607,21 @@
         const iframe = document.getElementById('pdf-iframe');
         overlay.style.display = 'none';
         iframe.src = '';
-        document.body.style.overflow = 'auto';
+        document.body.style.overflow = '';
       }
 
-      // 强化版下载函数
       function forceDownload(url, filename) {
         const a = document.createElement('a');
         a.href = url;
-        a.download = filename || 'download.pdf';
-        a.target = '_blank'; // 关键：增加 target 提高移动端兼容性
+        a.download = filename || 'document.pdf';
+        a.target = '_blank';
         document.body.appendChild(a);
         a.click();
-        setTimeout(() => document.body.removeChild(a), 100);
+        setTimeout(() => a.remove(), 100);
       }
 
-      document.addEventListener('keydown', (e) => {
-        if(e.key === 'Escape' && document.getElementById('pdf-modal-overlay').style.display === 'flex') {
-          closePdfModal();
-        }
+      window.addEventListener('keydown', (e) => {
+        if(e.key === 'Escape') closePdfModal();
       });
     </script>
   <!-- hexo injector body_end end --></body></html>
