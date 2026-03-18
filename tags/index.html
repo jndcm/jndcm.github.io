@@ -146,73 +146,57 @@
   pageType: 'page'
 }</script><!-- hexo injector head_end start -->
     <style>
+      :root { --pdf-theme-color: #327eb3; }
+
+      /* 容器样式：实现一行3个 */
+      .pdf-group-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        justify-content: flex-start;
+        margin: 25px 0;
+      }
+
+      /* 基础卡片样式 */
       .pdf-book-card-mini {
-        margin: 15px 0;
-        width: 100%;
-        max-width: 280px; /* 设定一个最大宽度上限 */
+        flex: 1 1 calc(33.333% - 11px); /* PC端平分3份 */
+        min-width: 200px;
         background: #fff;
-        border-radius: 8px;
+        border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         border: 1px solid #eef2f6;
         display: flex;
         flex-direction: column;
         transition: all 0.3s ease;
+        margin: 0; 
       }
-      .pdf-book-card-mini:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-      .pdf-card-spine { height: 6px; background: #327eb3; }
+
+      /* 响应式适配：手机端自动变回一行1个 */
+      @media screen and (max-width: 768px) {
+        .pdf-group-container .pdf-book-card-mini {
+          flex: 1 1 100%; 
+        }
+      }
+
+      .pdf-book-card-mini:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+      .pdf-card-spine { height: 6px; background: var(--pdf-theme-color); }
       .pdf-card-content { padding: 16px; flex-grow: 1; display: flex; flex-direction: column; }
-      .pdf-card-label {
-        align-self: flex-start;
-        background: rgba(50, 126, 179, 0.1);
-        color: #327eb3;
-        font-size: 11px;
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-weight: 700;
-        margin-bottom: 10px;
-      }
-      .pdf-card-title {
-        margin: 0 0 6px 0;
-        font-size: 15px;
-        color: #1a202c;
-        line-height: 1.4;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-      }
+      .pdf-card-label { align-self: flex-start; background: rgba(50, 126, 179, 0.1); color: var(--pdf-theme-color); font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 700; margin-bottom: 10px; }
+      .pdf-card-title { margin: 0 0 6px 0; font-size: 15px; color: #1a202c; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
       .pdf-card-author { font-size: 12px; color: #718096; margin-bottom: 15px; }
-      .pdf-card-actions {
-        margin-top: auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-top: 1px solid #f7fafc;
-        padding-top: 12px;
-      }
-      .btn-preview-link { color: #327eb3; font-size: 12px; font-weight: 600; text-decoration: none; cursor: pointer; }
-      .btn-download-icon {
-        width: 30px; height: 30px;
-        background: #f1f5f9;
-        border-radius: 6px;
-        display: flex; align-items: center; justify-content: center;
-        transition: all 0.2s; color: #475569;
-      }
-      .btn-download-icon:hover { background: #327eb3; color: #fff; }
+      .pdf-card-actions { margin-top: auto; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f7fafc; padding-top: 12px; }
+      .btn-preview-link { color: var(--pdf-theme-color); font-size: 13px; font-weight: 600; text-decoration: none; cursor: pointer; }
+      .btn-download-icon { width: 32px; height: 32px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; color: #475569; }
+      .btn-download-icon:hover { background: var(--pdf-theme-color); color: #fff; }
 
       /* 模态框样式 */
-      #pdf-modal-overlay {
-        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.75); z-index: 99999; flex-direction: column; align-items: center;
-      }
-      .pdf-modal-header {
-        width: 100%; background: #1a1a1a; color: #fff; padding: 10px 20px;
-        display: flex; justify-content: space-between; align-items: center; box-sizing: border-box;
-      }
+      #pdf-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100000; flex-direction: column; align-items: center; backdrop-filter: blur(4px); }
+      .pdf-modal-header { width: 100%; background: #1a1a1a; color: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
       #pdf-iframe { width: 100%; flex: 1; border: none; background: #525659; }
+      .pdf-loading-spinner { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 14px; display: none; z-index: 10; }
     </style>
-  <!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><span> 学习笔记</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tech/"><i class="fa-fw fas fa-code"></i><span> 技术学习</span></a></li><li><a class="site-page child" href="/product/"><i class="fa-fw fas fa-pen-ruler"></i><span> 产品设计</span></a></li><li><a class="site-page child" href="/data/"><i class="fa-fw fas fa-database"></i><span> 数据运营</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div></div></div><div class="page type-tags" id="body-wrap"><header class="not-home-page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">知途 | 产品·数据的成长随笔</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><span> 学习笔记</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tech/"><i class="fa-fw fas fa-code"></i><span> 技术学习</span></a></li><li><a class="site-page child" href="/product/"><i class="fa-fw fas fa-pen-ruler"></i><span> 产品设计</span></a></li><li><a class="site-page child" href="/data/"><i class="fa-fw fas fa-database"></i><span> 数据运营</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">标签</h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="tag-cloud-list text-center"><a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%B1%BB/" style="font-size: 1.2em; background-color: rgb(153, 50, 68);">数据分析类</a><a href="/tags/%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86%E7%B1%BB/" style="font-size: 1.2em; background-color: rgb(50, 67, 56);">产品经理类</a><a href="/tags/%E6%8A%80%E6%9C%AF%E5%9F%BA%E7%A1%80%E7%B1%BB/" style="font-size: 1.2em; background-color: rgb(50, 104, 93);">技术基础类</a><a href="/tags/%E6%95%B0%E6%8D%AE%E6%B2%BB%E7%90%86%E7%B1%BB/" style="font-size: 1.2em; background-color: rgb(50, 106, 156);">数据治理类</a><a href="/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%B1%BB/" style="font-size: 1.2em; background-color: rgb(138, 186, 91);">人工智能类</a><a href="/tags/%E5%AE%9A%E6%80%A7%E6%AF%94%E8%BE%83%E5%88%86%E6%9E%90/" style="font-size: 1.2em; background-color: rgb(146, 117, 50);">定性比较分析</a><a href="/tags/%E5%9F%BA%E7%A1%80%E7%90%86%E8%AE%BA/" style="font-size: 1.2em; background-color: rgb(112, 140, 169);">基础理论</a><a href="/tags/QCA/" style="font-size: 1.2em; background-color: rgb(185, 167, 177);">QCA</a><a href="/tags/%E7%B3%BB%E7%BB%9F%E5%8A%A8%E5%8A%9B%E5%AD%A6/" style="font-size: 1.2em; background-color: rgb(136, 188, 152);">系统动力学</a><a href="/tags/%E5%8F%AF%E6%8C%81%E7%BB%AD%E8%BF%90%E8%90%A5/" style="font-size: 1.2em; background-color: rgb(69, 168, 50);">可持续运营</a><a href="/tags/%E5%85%AC%E5%85%B1%E6%95%B0%E6%8D%AE%E5%B9%B3%E5%8F%B0/" style="font-size: 1.2em; background-color: rgb(87, 169, 119);">公共数据平台</a></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">铮铮怀柔</div><div class="author-info-description">个人学习与复盘的自留地，聚焦产品设计思维、公共数据运营实践、技术积累，分享学习笔记、行业思考，真实沉淀，与同频者一起成长，在探索中完善自我，在总结中突破提升。</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/jndcm"><i class="fab fa-github"></i><span>主题GitHub</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/jndcm" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:jndcm0902@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a><a class="social-icon" href="https://msng.link/o?https://u.wechat.com/MO95wEOjw5EJML9ZuF4Ka08?s=3=wc" target="_blank" title="Wechat"><i class="fab fa-weixin" style="color: #07c160;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/17/PDF%E4%B9%A6%E7%B1%8D%E5%A4%A7%E5%85%A8/" title="书籍大全PDF">书籍大全PDF</a><time datetime="2026-03-16T16:00:00.000Z" title="发表于 2026-03-17 00:00:00">2026-03-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/15/%E5%AE%9A%E6%80%A7%E6%AF%94%E8%BE%83%E5%88%86%E6%9E%90%EF%BC%88QCA%EF%BC%89%EF%BC%9A%E4%BB%8E%E5%9F%BA%E7%A1%80%E5%88%B0%E5%BA%94%E7%94%A8%EF%BC%88%E4%B8%80%EF%BC%89/" title="定性比较分析（QCA）：从基础到应用（一）">定性比较分析（QCA）：从基础到应用（一）</a><time datetime="2026-03-14T16:00:00.000Z" title="发表于 2026-03-15 00:00:00">2026-03-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/15/%E5%85%AC%E5%85%B1%E6%95%B0%E6%8D%AE%E5%B9%B3%E5%8F%B0%E5%8F%AF%E6%8C%81%E7%BB%AD%E8%BF%90%E8%90%A5%E7%9A%84%E7%B3%BB%E7%BB%9F%E5%8A%A8%E5%8A%9B%E5%AD%A6%E6%A8%A1%E5%9E%8B%E6%9E%84%E5%BB%BA%E4%B8%8E%E9%A2%84%E6%9C%9F/" title="公共数据平台可持续运营的系统动力学建模与仿真研究">公共数据平台可持续运营的系统动力学建模与仿真研究</a><time datetime="2026-03-14T16:00:00.000Z" title="发表于 2026-03-15 00:00:00">2026-03-15</time></div></div></div></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%B1%BB/" style="font-size: 1.15em; color: rgb(50, 60, 94);">数据分析类</a><a href="/tags/%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86%E7%B1%BB/" style="font-size: 1.15em; color: rgb(59, 51, 155);">产品经理类</a><a href="/tags/%E6%8A%80%E6%9C%AF%E5%9F%BA%E7%A1%80%E7%B1%BB/" style="font-size: 1.15em; color: rgb(51, 50, 199);">技术基础类</a><a href="/tags/%E6%95%B0%E6%8D%AE%E6%B2%BB%E7%90%86%E7%B1%BB/" style="font-size: 1.15em; color: rgb(198, 134, 104);">数据治理类</a><a href="/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%B1%BB/" style="font-size: 1.15em; color: rgb(64, 108, 50);">人工智能类</a><a href="/tags/%E5%AE%9A%E6%80%A7%E6%AF%94%E8%BE%83%E5%88%86%E6%9E%90/" style="font-size: 1.15em; color: rgb(152, 104, 90);">定性比较分析</a><a href="/tags/%E5%9F%BA%E7%A1%80%E7%90%86%E8%AE%BA/" style="font-size: 1.15em; color: rgb(180, 109, 99);">基础理论</a><a href="/tags/QCA/" style="font-size: 1.15em; color: rgb(50, 150, 50);">QCA</a><a href="/tags/%E7%B3%BB%E7%BB%9F%E5%8A%A8%E5%8A%9B%E5%AD%A6/" style="font-size: 1.15em; color: rgb(50, 119, 198);">系统动力学</a><a href="/tags/%E5%8F%AF%E6%8C%81%E7%BB%AD%E8%BF%90%E8%90%A5/" style="font-size: 1.15em; color: rgb(172, 180, 82);">可持续运营</a><a href="/tags/%E5%85%AC%E5%85%B1%E6%95%B0%E6%8D%AE%E5%B9%B3%E5%8F%B0/" style="font-size: 1.15em; color: rgb(196, 50, 50);">公共数据平台</a></div></div><div class="card-widget card-archives">
+  <!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><span> 学习笔记</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tech/"><i class="fa-fw fas fa-code"></i><span> 技术学习</span></a></li><li><a class="site-page child" href="/product/"><i class="fa-fw fas fa-pen-ruler"></i><span> 产品设计</span></a></li><li><a class="site-page child" href="/data/"><i class="fa-fw fas fa-database"></i><span> 数据运营</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div></div></div><div class="page type-tags" id="body-wrap"><header class="not-home-page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">知途 | 产品·数据的成长随笔</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><span> 学习笔记</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/tech/"><i class="fa-fw fas fa-code"></i><span> 技术学习</span></a></li><li><a class="site-page child" href="/product/"><i class="fa-fw fas fa-pen-ruler"></i><span> 产品设计</span></a></li><li><a class="site-page child" href="/data/"><i class="fa-fw fas fa-database"></i><span> 数据运营</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">标签</h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="tag-cloud-list text-center"><a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%B1%BB/" style="font-size: 1.2em; background-color: rgb(50, 139, 78);">数据分析类</a><a href="/tags/%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86%E7%B1%BB/" style="font-size: 1.2em; background-color: rgb(110, 79, 83);">产品经理类</a><a href="/tags/%E6%8A%80%E6%9C%AF%E5%9F%BA%E7%A1%80%E7%B1%BB/" style="font-size: 1.2em; background-color: rgb(54, 116, 60);">技术基础类</a><a href="/tags/%E6%95%B0%E6%8D%AE%E6%B2%BB%E7%90%86%E7%B1%BB/" style="font-size: 1.2em; background-color: rgb(117, 50, 50);">数据治理类</a><a href="/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%B1%BB/" style="font-size: 1.2em; background-color: rgb(50, 158, 161);">人工智能类</a><a href="/tags/%E5%AE%9A%E6%80%A7%E6%AF%94%E8%BE%83%E5%88%86%E6%9E%90/" style="font-size: 1.2em; background-color: rgb(59, 166, 50);">定性比较分析</a><a href="/tags/%E5%9F%BA%E7%A1%80%E7%90%86%E8%AE%BA/" style="font-size: 1.2em; background-color: rgb(50, 104, 199);">基础理论</a><a href="/tags/QCA/" style="font-size: 1.2em; background-color: rgb(50, 54, 131);">QCA</a><a href="/tags/%E7%B3%BB%E7%BB%9F%E5%8A%A8%E5%8A%9B%E5%AD%A6/" style="font-size: 1.2em; background-color: rgb(134, 78, 50);">系统动力学</a><a href="/tags/%E5%8F%AF%E6%8C%81%E7%BB%AD%E8%BF%90%E8%90%A5/" style="font-size: 1.2em; background-color: rgb(50, 127, 95);">可持续运营</a><a href="/tags/%E5%85%AC%E5%85%B1%E6%95%B0%E6%8D%AE%E5%B9%B3%E5%8F%B0/" style="font-size: 1.2em; background-color: rgb(67, 50, 50);">公共数据平台</a></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">铮铮怀柔</div><div class="author-info-description">个人学习与复盘的自留地，聚焦产品设计思维、公共数据运营实践、技术积累，分享学习笔记、行业思考，真实沉淀，与同频者一起成长，在探索中完善自我，在总结中突破提升。</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/jndcm"><i class="fab fa-github"></i><span>主题GitHub</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/jndcm" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:jndcm0902@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a><a class="social-icon" href="https://msng.link/o?https://u.wechat.com/MO95wEOjw5EJML9ZuF4Ka08?s=3=wc" target="_blank" title="Wechat"><i class="fab fa-weixin" style="color: #07c160;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/17/PDF%E4%B9%A6%E7%B1%8D%E5%A4%A7%E5%85%A8/" title="书籍大全PDF">书籍大全PDF</a><time datetime="2026-03-16T16:00:00.000Z" title="发表于 2026-03-17 00:00:00">2026-03-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/15/%E5%AE%9A%E6%80%A7%E6%AF%94%E8%BE%83%E5%88%86%E6%9E%90%EF%BC%88QCA%EF%BC%89%EF%BC%9A%E4%BB%8E%E5%9F%BA%E7%A1%80%E5%88%B0%E5%BA%94%E7%94%A8%EF%BC%88%E4%B8%80%EF%BC%89/" title="定性比较分析（QCA）：从基础到应用（一）">定性比较分析（QCA）：从基础到应用（一）</a><time datetime="2026-03-14T16:00:00.000Z" title="发表于 2026-03-15 00:00:00">2026-03-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/15/%E5%85%AC%E5%85%B1%E6%95%B0%E6%8D%AE%E5%B9%B3%E5%8F%B0%E5%8F%AF%E6%8C%81%E7%BB%AD%E8%BF%90%E8%90%A5%E7%9A%84%E7%B3%BB%E7%BB%9F%E5%8A%A8%E5%8A%9B%E5%AD%A6%E6%A8%A1%E5%9E%8B%E6%9E%84%E5%BB%BA%E4%B8%8E%E9%A2%84%E6%9C%9F/" title="公共数据平台可持续运营的系统动力学建模与仿真研究">公共数据平台可持续运营的系统动力学建模与仿真研究</a><time datetime="2026-03-14T16:00:00.000Z" title="发表于 2026-03-15 00:00:00">2026-03-15</time></div></div></div></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%B1%BB/" style="font-size: 1.15em; color: rgb(102, 65, 182);">数据分析类</a><a href="/tags/%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86%E7%B1%BB/" style="font-size: 1.15em; color: rgb(50, 50, 168);">产品经理类</a><a href="/tags/%E6%8A%80%E6%9C%AF%E5%9F%BA%E7%A1%80%E7%B1%BB/" style="font-size: 1.15em; color: rgb(185, 126, 87);">技术基础类</a><a href="/tags/%E6%95%B0%E6%8D%AE%E6%B2%BB%E7%90%86%E7%B1%BB/" style="font-size: 1.15em; color: rgb(128, 131, 157);">数据治理类</a><a href="/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%B1%BB/" style="font-size: 1.15em; color: rgb(155, 67, 179);">人工智能类</a><a href="/tags/%E5%AE%9A%E6%80%A7%E6%AF%94%E8%BE%83%E5%88%86%E6%9E%90/" style="font-size: 1.15em; color: rgb(50, 170, 122);">定性比较分析</a><a href="/tags/%E5%9F%BA%E7%A1%80%E7%90%86%E8%AE%BA/" style="font-size: 1.15em; color: rgb(76, 121, 148);">基础理论</a><a href="/tags/QCA/" style="font-size: 1.15em; color: rgb(107, 140, 50);">QCA</a><a href="/tags/%E7%B3%BB%E7%BB%9F%E5%8A%A8%E5%8A%9B%E5%AD%A6/" style="font-size: 1.15em; color: rgb(81, 112, 80);">系统动力学</a><a href="/tags/%E5%8F%AF%E6%8C%81%E7%BB%AD%E8%BF%90%E8%90%A5/" style="font-size: 1.15em; color: rgb(176, 142, 178);">可持续运营</a><a href="/tags/%E5%85%AC%E5%85%B1%E6%95%B0%E6%8D%AE%E5%B9%B3%E5%8F%B0/" style="font-size: 1.15em; color: rgb(50, 186, 140);">公共数据平台</a></div></div><div class="card-widget card-archives">
     <div class="item-headline">
       <i class="fas fa-archive"></i>
       <span>归档</span>
@@ -231,28 +215,54 @@
         </li>
       
     </ul>
-  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">3</div></div><div class="webinfo-item"><div class="item-name">本站总字数 :</div><div class="item-count">12.7k</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-03-18T04:05:49.606Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 铮铮怀柔</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start -->
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">3</div></div><div class="webinfo-item"><div class="item-name">本站总字数 :</div><div class="item-count">12.7k</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-03-18T14:09:50.517Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 铮铮怀柔</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start -->
     <div id="pdf-modal-overlay">
       <div class="pdf-modal-header">
-        <span id="pdf-modal-title" style="font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></span>
-        <button onclick="closePdfModal()" style="background:#327eb3; color:#fff; border:none; padding:6px 16px; border-radius:4px; cursor:pointer;">关闭</button>
+        <span id="pdf-modal-title" style="font-size:14px; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></span>
+        <button onclick="closePdfModal()" style="background:var(--pdf-theme-color); color:#fff; border:none; padding:6px 16px; border-radius:6px; cursor:pointer; font-weight:600;">关闭</button>
       </div>
+      <div id="pdf-loader" class="pdf-loading-spinner">正在调起阅读器...</div>
       <iframe id="pdf-iframe"></iframe>
     </div>
+
     <script>
       function openPdfModal(url, name) {
+        // 移动端检测
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        if (isMobile) {
+          // 移动端直接新窗口打开，利用原生PDF渲染，加载极快
+          window.open(url, '_blank');
+          return;
+        }
+
         const overlay = document.getElementById('pdf-modal-overlay');
         const iframe = document.getElementById('pdf-iframe');
+        const loader = document.getElementById('pdf-loader');
+        
         document.getElementById('pdf-modal-title').innerText = "预览: " + name;
-        iframe.src = url + '#toolbar=1';
         overlay.style.display = 'flex';
+        loader.style.display = 'block';
         document.body.style.overflow = 'hidden';
+
+        setTimeout(() => {
+          iframe.src = url + '#toolbar=1';
+          iframe.onload = () => { loader.style.display = 'none'; };
+        }, 50);
       }
+
       function closePdfModal() {
-        document.getElementById('pdf-modal-overlay').style.display = 'none';
-        document.getElementById('pdf-iframe').src = '';
+        const overlay = document.getElementById('pdf-modal-overlay');
+        const iframe = document.getElementById('pdf-iframe');
+        overlay.style.display = 'none';
+        iframe.src = '';
         document.body.style.overflow = 'auto';
       }
-      document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closePdfModal(); });
+
+      document.addEventListener('keydown', (e) => {
+        if(e.key === 'Escape' && document.getElementById('pdf-modal-overlay').style.display === 'flex') {
+          closePdfModal();
+        }
+      });
     </script>
   <!-- hexo injector body_end end --></body></html>
